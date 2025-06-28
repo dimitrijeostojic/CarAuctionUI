@@ -1,22 +1,63 @@
+'use client';
+import { useEffect, useState } from "react";
+import { GetData } from "../actions/actions";
+import AddPagination from "../components/AddPagination";
 import AuctionCard from "./AuctionCard";
+import { Auction, PageResult } from "../../../types";
+import Filters from "./Filters";
+import { useParamsStore } from "../../../hooks/useParamsStore";
+import { useShallow } from "zustand/shallow";
+import queryString from "query-string";
+import EmptyFilter from "../components/EmptyFilter";
 
-const GetData = async () => {
-    const res = await fetch('http://localhost:6001/search', { cache: 'force-cache' });
-    if (!res.ok) {
-        throw new Error("Failed to fetch data");
+
+export default function Listings() {
+
+    const [data, setData] = useState<PageResult<Auction>>();
+    const params = useParamsStore(useShallow(state => ({
+        pageNumber: state.pageNumber,
+        pageSize: state.pageSize,
+        searchTerm: state.searchTerm,
+        orderBy: state.orderBy,
+        filterBy: state.filterBy
+    })));
+
+    const setParams = useParamsStore(state => state.setParams);
+    const url = queryString.stringifyUrl({ url: '', query: params }, { skipEmptyString: true })
+
+    function setPageNumber(pageNumber: number) {
+        setParams({ pageNumber })
     }
-    return res.json();
-};
 
-export default async function Listings() {
+    useEffect(() => {
+        GetData(url)
+            .then(data => {
+                setData(data);
+            })
+    }, [url]);
 
-    const data = await GetData();
+    if (!data) {
+        return <h3>Loading...</h3>
+    }
 
     return (
-        <div>
-            {data && data.result.map((auction: any) => (
-                <AuctionCard key={auction.id} auction={auction} />
-            ))}
-        </div>
+        <>
+            <Filters />
+            {data.totalCount === 0 ? (
+                <EmptyFilter showReset />
+            ) : (
+                <>
+                    <div className="grid grid-cols-4 gap-6">
+                        {data && data.result.map((auction) => (
+                            <AuctionCard key={auction.id} auction={auction} />
+                        ))}
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <AddPagination pageChanged={setPageNumber} currentPage={params.pageNumber} pageCount={data.pageCount} />
+                    </div>
+                </>
+            )}
+
+        </>
     )
 }
