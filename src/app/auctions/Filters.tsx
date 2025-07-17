@@ -15,7 +15,7 @@ const orderButtons = [
 
 const filterButtons = [
     { label: 'Live auctions', icon: GiFlame, value: 'live' },
-    { label: 'Ending < 6 houts', icon: GiFinishLine, value: 'endingSoon' },
+    { label: 'Ending < 6 hours', icon: GiFinishLine, value: 'endingSoon' },
     { label: 'Completed', icon: BsStopwatchFill, value: 'finished' }
 ];
 

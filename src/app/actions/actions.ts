@@ -1,4 +1,3 @@
-'use server';
 import { Auction, PageResult } from "../../../types";
 
 export const GetData = async (query:string): Promise<PageResult<Auction>> => {

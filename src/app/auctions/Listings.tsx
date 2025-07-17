@@ -23,6 +23,7 @@ export default function Listings() {
     })));
 
     const setParams = useParamsStore(state => state.setParams);
+    
     const url = queryString.stringifyUrl({ url: '', query: params }, { skipEmptyString: true })
 
     function setPageNumber(pageNumber: number) {
@@ -44,7 +45,7 @@ export default function Listings() {
         <>
             <Filters />
             {data.totalCount === 0 ? (
-                <EmptyFilter showReset />
+                <EmptyFilter showReset={true} />
             ) : (
                 <>
                     <div className="grid grid-cols-4 gap-6">
