@@ -34,7 +34,10 @@ export default function Listings() {
         GetData(url)
             .then(data => {
                 setData(data);
+                console.log(data?.result);
+                console.log(url);
             })
+            
     }, [url]);
 
     if (!data) {

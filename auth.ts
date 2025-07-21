@@ -13,6 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             idToken: true,
         } as OIDCConfig<Omit<Profile,'username'>>)
     ],
+    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token, profile }) {
             if (profile) {
